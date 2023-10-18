@@ -1,0 +1,27 @@
+
+services:
+  db:
+    image: "postgres:latest"
+    environment:
+      POSTGRES_USER: santosh
+      POSTGRES_PASSWORD: Adabala@1505
+      POSTGRES_DB: shelter
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  pipeline:
+    build: .
+    
+    # command: /usr/wait-for-it.sh db:5432 -- python pipeline.py
+    command: /app/download_file.sh
+
+
+    depends_on:
+      - db
+    
+
+volumes:
+  db_data:
