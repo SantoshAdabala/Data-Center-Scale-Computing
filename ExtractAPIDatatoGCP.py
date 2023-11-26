@@ -9,13 +9,13 @@ from google.cloud import storage
 mountain_time_zone = pytz.timezone('US/Mountain')
 
 
-def extract_data_from_api(limit=50000, order='animal_id'):
+def extract_api_data(limit=50000, order='animal_id'):
     """
     Function to extract data from data.austintexas.gov API.
     """
     api_url = 'https://data.austintexas.gov/resource/9t4d-g238.json'
 
-    api_key = '58778d3tul9ykaurce5wf29ek'
+    api_key = 'cx1ax1xme7m1r8bler55ab7jk'
 
     headers = { 
         'accept': "application/json", 
@@ -46,7 +46,7 @@ def extract_data_from_api(limit=50000, order='animal_id'):
     return data
 
 
-def create_dataframe(data):
+def create_data(data):
     columns = [
         'animal_id', 'name', 'datetime', 'monthyear', 'date_of_birth',
         'outcome_type', 'animal_type', 'sex_upon_outcome', 'age_upon_outcome',
@@ -62,7 +62,7 @@ def create_dataframe(data):
     return df
 
 
-def upload_to_gcs(dataframe, bucket_name, file_path):
+def gcs_upload(dataframe, bucket_name, file_path):
     """
     Upload a DataFrame to a Google Cloud Storage bucket using service account credentials.
     """
@@ -95,11 +95,11 @@ def upload_to_gcs(dataframe, bucket_name, file_path):
 
 
 def main():
-    data_extracted = extract_data_from_api(limit=50000, order='animal_id')
-    shelter_data = create_dataframe(data_extracted)
+    data_extracted = extract_api_data(limit=50000, order='animal_id')
+    shelter_data = create_data(data_extracted)
 
     gcs_bucket_name = 'data_center_lab3'
     gcs_file_path = 'data/{}/outcomes_{}.csv'
 
-    upload_to_gcs(shelter_data, gcs_bucket_name, gcs_file_path)
+    gcs_upload(shelter_data, gcs_bucket_name, gcs_file_path)
  

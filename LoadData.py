@@ -26,7 +26,7 @@ class GCPDataLoader:
                         }
         return credentials
 
-    def connect_to_gcp_and_get_data(self, file_name):
+    def connect_and_get_data(self, file_name):
         gcp_file_path = f'transformed_data/{file_name}'
 
         credentials_info = self.getcredentials()
@@ -41,7 +41,7 @@ class GCPDataLoader:
         return df
 
     def get_data(self, file_name):
-        df = self.connect_to_gcp_and_get_data(file_name)
+        df = self.connect_and_get_data(file_name)
         return df
 
 
@@ -123,7 +123,7 @@ class PostgresDataLoader:
         cursor.close()
         print("Finished creating tables...")
 
-    def load_data_into_postgres(self, connection, gcp_data, table_name):
+    def load_postgres_data(self, connection, gcp_data, table_name):
         cursor = connection.cursor()
         print(f"Dropping Table {table_name}")
         truncate_table = f"DROP TABLE {table_name};"
@@ -142,7 +142,7 @@ class PostgresDataLoader:
 
         print(f"Number of rows inserted for table {table_name}: {len(gcp_data)}")
 
-def load_data_to_postgres(file_name, table_name):
+def load_postgres_data(file_name, table_name):
     gcp_loader = GCPDataLoader()
     table_data_df = gcp_loader.get_data(file_name)
 
@@ -151,4 +151,4 @@ def load_data_to_postgres(file_name, table_name):
     postgres_connection = postgres_dataloader.connect_to_postgres()
 
     postgres_dataloader.create_table(postgres_connection, table_query)
-    postgres_dataloader.load_data_into_postgres(postgres_connection, table_data_df, table_name)
+    postgres_dataloader.load_postgres_data(postgres_connection, table_data_df, table_name)
